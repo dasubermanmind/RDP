@@ -13,7 +13,7 @@ class Tokenizer {
     }
 
     EOF() {
-        return this._cursor == this.string.length;
+        return this._cursor == this._string.length;
     }
 
     getNextToken(){
@@ -28,11 +28,13 @@ class Tokenizer {
             while(!Number.isNaN(Number(string[this._cursor]))){
                 number += string[this._cursor++];
             }
+
             return {
                 type: 'NUMBER',
                 value: number,
-            }
+            };
         }
+        
         // Strings
         if(string[0] === '"'){
             // collect all the characters
@@ -40,10 +42,14 @@ class Tokenizer {
             do {
                 characters += string[this._cursor++];
             }while(string[this._cursor] !== '"' && !this.EOF());
+            
+            characters += this._cursor++;
+            
+            return {
+                type: 'STRING', // token type
+                value: characters,
+            };
         }
-
-
-
 
         return null;
     }

@@ -31,12 +31,13 @@ class Parser {
         console.log('INSIDE _eat-->');
         const token = this.lookahead;
         console.log('Token-->',token);
+        console.log('TokenType-->',tokenType);
         
         if(token == null){
             throw new SyntaxError('Unexpected end of input');
         }
 
-        if(token.type!= tokenType){
+        if(token.type !== tokenType){
             throw new SyntaxError(`Expected ${tokenType} but found ${token.type}`);
         }
         
@@ -49,14 +50,20 @@ class Parser {
         console.log('INSIDE Program-->');
         return {
             type:'Program',
-            body: this.NumbericalLiteral(),
+            body: this.Literal(),
         }
     }
 
     // There are two types of literals:
     // 1. Numeric literals
     // 2. String literals
-    Literal(){}
+    Literal(){
+        switch(this.lookahead.type){
+            case 'NUMBER': return this.NumberLiteral();
+            case 'STRING': return this.StringLiteral();
+            
+        }
+    }
 
 
     // This comes from the tokenizer; retunrs the ast nodes
@@ -64,10 +71,18 @@ class Parser {
     NumbericalLiteral(){
         console.log('INSIDE NumbericalLiteral-->');
         const token = this._eat('NUMBER');
-        console.log('Token-->',token);
         return {
             type: 'NumbericalLiteral',
             value: Number(token.value),
+        }
+    }
+
+    StringLiteral(){
+        console.log('INSIDE StringLiteral-->');
+        const token = this._eat('STRING');
+        return {
+            type: 'StringLiteral',
+            value: token.value.slice(1,-1),
         }
     }
 
